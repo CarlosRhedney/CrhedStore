@@ -1,0 +1,22 @@
+{
+    "name": "carlosrhedney/crhedstore",
+    "description": "Initializing the project",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Crhed\\": "vendor\\crhedstore\\php-classes\\src"
+        }
+    },
+    "authors": [
+        {
+            "name": "Carlos Rhedney",
+            "email": "twisterpsa@hotmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "phpmailer/phpmailer":"5.2.22",
+        "slim/slim":"2.0",
+        "rain/raintpl":"3.0.0"
+    }
+}
