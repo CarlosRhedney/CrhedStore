@@ -2,8 +2,9 @@
 namespace Crhed\Model;
 
 use \Crhed\DB\Sql;
+use \Crhed\Model;
 
-class User extends \Crhed\Model
+class User extends Model
 {
 	const SESSION = "User";
 
@@ -53,6 +54,11 @@ class User extends \Crhed\Model
 			header("Location: /admin/login");
 			exit;
 		}
+	}
+
+	public static function logout()
+	{
+		$_SESSION[User::SESSION] = NULL;
 	}
 }
 ?>
