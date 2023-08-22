@@ -1,0 +1,22 @@
+{
+    "name": "carlosrhedney/crhedstore",
+    "description": "Ecommerce",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Crhedstore\\": "vendor\\crhedstore\\php-classes\\src"
+        }
+    },
+    "authors": [
+        {
+            "name": "Carlos Rhedney",
+            "email": "twisterpsa@hotmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "phpmailer/phpmailer":"5.2.22",
+        "slim/slim":"3.0.0",
+        "rain/raintpl":"3.0.0"
+    }
+}
