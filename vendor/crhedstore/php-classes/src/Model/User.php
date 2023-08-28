@@ -3,10 +3,13 @@ namespace Crhedstore\Model;
 
 use \Crhedstore\DB\Sql;
 use \Crhedstore\Model;
+use \Crhedstore\Mailer;
 
 class User extends Model
 {
 	const SESSION = "User";
+	const SECRET = "CarlosRhedneySan"; //Primeira chave precisa ter 16 caracteres
+	const SECRET_IV = "CarlosRhedneySantos"; //Segunda 19 caracteres
 	const ERROR_LOGIN = "UserErrorLogin";
 
 	public static function login($login, $password)
@@ -162,6 +165,113 @@ class User extends Model
 		$sql = new Sql();
 
 		$sql->query("CALL sp_users_delete(:iduser)", [
+			":iduser"=>$this->getiduser()
+		]);
+		
+	}
+
+	public static function getForgot($mail, $inadmin = true)
+	{
+
+		$sql = new Sql();
+
+		$results = $sql->select("SELECT * FROM tb_persons a INNER JOIN tb_users b USING(idperson) WHERE a.mail = :mail", [
+			":mail"=>$mail
+		]);
+
+		if(count($results) === 0){
+
+			throw new \Exception("Não foi possível recuperar a senha!");
+
+		}else{
+
+			$data = $results[0];
+
+			$resultsRecovery = $sql->select("CALL sp_userspasswordsrecoveries_create(:iduser, :ip)", [
+				":iduser"=>$data["iduser"],
+				":ip"=>$_SERVER["REMOTE_ADDR"]
+			]);
+
+			if(count($resultsRecovery) === 0){
+
+				throw new \Exception("Não foi possível recuperar a senha!");
+
+			}else{
+
+				$dataRecovery = $resultsRecovery[0];
+
+				$cod = openssl_encrypt($dataRecovery["idrecovery"], 'AES-128-CBC', pack("a16", User::SECRET), 0, pack("a16", User::SECRET_IV));
+
+				$code = base64_encode($cod);
+
+				if($inadmin === true){
+
+					$link = "http://www.crhedstore.com.br/admin/forgot/reset?code=$code";
+
+				}else{
+
+					$link = "http://www.crhedstore.com.br/forgot/reset?code=$code";
+
+				}
+
+				$mailer = new Mailer($data["mail"], $data["person"], "Redefinir senha CrhedStore", "forgot", [
+					"name"=>$data["person"],
+					"link"=>$link
+				]);
+
+				$mailer->send();
+
+				return $data;
+
+			}
+
+		}
+
+	}
+
+	public static function validForgotDecrypt($code)
+	{
+
+		$code = base64_decode($code);
+
+		$idrecovery = openssl_decrypt($code, 'AES-128-CBC', pack("a16", User::SECRET), 0, pack("a16", User::SECRET_IV));
+
+		$sql = new Sql();
+
+		$results = $sql->select("SELECT * FROM tb_userspasswordsrecoveries a INNER JOIN tb_users b USING(iduser) INNER JOIN tb_persons c USING(idperson) WHERE a.idrecovery = :idrecovery AND a.dtrecovery IS NULL AND DATE_ADD(a.dtregister, INTERVAL 1 HOUR) >= NOW()", [
+			":idrecovery"=>$idrecovery
+		]);
+
+		if(count($results) === 0){
+
+			throw new \Exception("Não foi possível recuperar a senha!");
+
+		}else{
+
+			return $results[0];
+
+		}
+
+	}
+
+	public static function setForgotUsed($idrecovery)
+	{
+
+		$sql = new Sql();
+
+		$sql->query("UPDATE tb_userspasswordsrecoveries SET dtrecovery = NOW() WHERE idrecovery = :idrecovery", [
+			":idrecovery"=>$idrecovery
+		]);
+
+	}
+
+	public function setPassword($password)
+	{
+
+		$sql = new Sql();
+
+		$sql->query("UPDATE tb_users SET despassword = :password WHERE iduser = :iduser", [
+			":password"=>$password,
 			":iduser"=>$this->getiduser()
 		]);
 		
