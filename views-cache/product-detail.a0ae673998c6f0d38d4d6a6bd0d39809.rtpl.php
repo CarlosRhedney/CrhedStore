@@ -1,9 +1,9 @@
-<div class="product-big-title-area">
+<?php if(!class_exists('Rain\Tpl')){exit;}?><div class="product-big-title-area">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
                 <div class="product-bit-title text-center">
-                    <h2>{$product.product}</h2>
+                    <h2><?php echo htmlspecialchars( $product["product"], ENT_COMPAT, 'UTF-8', FALSE ); ?></h2>
                 </div>
             </div>
         </div>
@@ -17,23 +17,23 @@
                 <div class="product-content-right">
                     <div class="product-breadcroumb">
                         <a href="/">Home</a>
-                        <a href="">{$product.product}</a>
+                        <a href=""><?php echo htmlspecialchars( $product["product"], ENT_COMPAT, 'UTF-8', FALSE ); ?></a>
                     </div>
                     
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="product-images">
                                 <div class="product-main-img">
-                                    <img src="{$product.photo}">
+                                    <img src="<?php echo htmlspecialchars( $product["photo"], ENT_COMPAT, 'UTF-8', FALSE ); ?>">
                                 </div>
                             </div>
                         </div>
                         
                         <div class="col-sm-6">
                             <div class="product-inner">
-                                <h2 class="product-name">{$product.product}</h2>
+                                <h2 class="product-name"><?php echo htmlspecialchars( $product["product"], ENT_COMPAT, 'UTF-8', FALSE ); ?></h2>
                                 <div class="product-inner-price">
-                                    <ins>R${function="formatPrice($product.price)"}</ins>
+                                    <ins>R$<?php echo formatPrice($product["price"]); ?></ins>
                                 </div>    
                                 
                                 <form action="" class="cart">
@@ -44,7 +44,7 @@
                                 </form>   
                                 
                                 <div class="product-inner-category">
-                                    <p>Categorias:{loop="$categories"} <a href="/categories/{$value.idcategory}">{$value.category}</a>{/loop}.
+                                    <p>Categorias:<?php $counter1=-1;  if( isset($categories) && ( is_array($categories) || $categories instanceof Traversable ) && sizeof($categories) ) foreach( $categories as $key1 => $value1 ){ $counter1++; ?> <a href="/categories/<?php echo htmlspecialchars( $value1["idcategory"], ENT_COMPAT, 'UTF-8', FALSE ); ?>"><?php echo htmlspecialchars( $value1["category"], ENT_COMPAT, 'UTF-8', FALSE ); ?></a><?php } ?>.
                                 </div> 
                                 
                                 <div role="tabpanel">
@@ -55,7 +55,7 @@
                                     <div class="tab-content">
                                         <div role="tabpanel" class="tab-pane fade in active" id="home">
                                             <h2>Descrição do Produto</h2>  
-                                            <table class="table table-condensed table-striped table-bordered">
+                                            <table class="table table-condensed table-striped-columns table-bordered">
                                                 <thead>
                                                     <th>Preço</th>
                                                     <th>Largura</th>
@@ -64,11 +64,11 @@
                                                     <th>Peso</th>
                                                 </thead>
                                                 <tbody>
-                                                    <td>{function="formatPrice($product.price)"}</td>
-                                                    <td>{$product.width}</td>
-                                                    <td>{$product.height}</td>
-                                                    <td>{$product.length}</td>
-                                                    <td>{$product.weight}</td>
+                                                    <td><?php echo formatPrice($product["price"]); ?></td>
+                                                    <td><?php echo htmlspecialchars( $product["width"], ENT_COMPAT, 'UTF-8', FALSE ); ?></td>
+                                                    <td><?php echo htmlspecialchars( $product["height"], ENT_COMPAT, 'UTF-8', FALSE ); ?></td>
+                                                    <td><?php echo htmlspecialchars( $product["length"], ENT_COMPAT, 'UTF-8', FALSE ); ?></td>
+                                                    <td><?php echo htmlspecialchars( $product["weight"], ENT_COMPAT, 'UTF-8', FALSE ); ?></td>
                                                 </tbody>
                                             </table>
                                         </div>
@@ -101,9 +101,11 @@
                     <div class="col-sm-6">
                         <div class="product-images">
                             <div class="product-main-img">
-                                {loop="$photos"}
-                                <img src="/{$value.photo}">
-                                {/loop}
+                                <?php $counter1=-1;  if( isset($photos) && ( is_array($photos) || $photos instanceof Traversable ) && sizeof($photos) ) foreach( $photos as $key1 => $value1 ){ $counter1++; ?>
+
+                                <img src="/<?php echo htmlspecialchars( $value1["photo"], ENT_COMPAT, 'UTF-8', FALSE ); ?>">
+                                <?php } ?>
+
                             </div>
                         </div>
                     </div>

@@ -47,4 +47,20 @@ $app->get('/categories/{idcategory}', function(Request $request, Response $respo
 
 });
 
+$app->get('/products/{url}', function(Request $request, Response $response, array $args){
+
+	$product = new Product();
+
+	$product->getFromUrl($args["url"]);
+
+	$page = new Page();
+
+	$page->setTpl("product-detail", [
+		"product"=>$product->getValues(),
+		"categories"=>$product->getCategories(),
+		"photos"=>$product->getPhotos()
+	]);
+
+});
+
 ?>

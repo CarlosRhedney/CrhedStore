@@ -157,5 +157,29 @@ class Product extends Model
 
 	}
 
+	public function getFromUrl($url)
+	{
+
+		$sql = new Sql();
+
+		$results = $sql->select("SELECT * FROM tb_products WHERE url = :url LIMIT 1", [
+			":url"=>$url
+		]);
+
+		$this->setData($results[0]);
+
+	}
+
+	public function getCategories()
+	{
+
+		$sql = new Sql();
+
+		return $sql->select("SELECT * FROM tb_categoriesproducts a INNER JOIN tb_categories b ON a.idcategory = b.idcategory WHERE a.idproduct = :idproduct", [
+			":idproduct"=>$this->getidproduct()
+		]);
+		
+	}
+
 }
 ?>
