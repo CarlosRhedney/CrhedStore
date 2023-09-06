@@ -55,7 +55,7 @@
                                     <div class="tab-content">
                                         <div role="tabpanel" class="tab-pane fade in active" id="home">
                                             <h2>Descrição do Produto</h2>  
-                                            <table class="table table-condensed table-striped-columns table-bordered">
+                                            <table class="table table-condensed table-striped table-bordered">
                                                 <thead>
                                                     <th>Preço</th>
                                                     <th>Largura</th>

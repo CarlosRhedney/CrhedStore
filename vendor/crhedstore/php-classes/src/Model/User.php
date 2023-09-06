@@ -47,7 +47,26 @@ class User extends Model
 
 	}
 
-	public static function verifyLogin($inadmin = true)
+	public static function getFromSession()
+	{
+
+		$idperson = (int)$_SESSION[User::SESSION]["idperson"];
+
+		$user = new User();
+
+		$sql = new Sql();
+
+		$results = $sql->select("SELECT * FROM tb_persons a INNER JOIN tb_users b USING(idperson) WHERE a.idperson = :idperson", [
+			":idperson"=>$idperson
+		]);
+
+		$user->setData($results[0]);
+
+		return $user;
+
+	}
+
+	public static function checkLogin($inadmin = true)
 	{
 
 		if(
@@ -56,13 +75,46 @@ class User extends Model
 			!$_SESSION[User::SESSION]
 			||
 			!(int)$_SESSION[User::SESSION]["iduser"] > 0
-			||
-			(bool)$_SESSION[User::SESSION]["inadmin"] !== $inadmin
 		){
 
-			header("Location: /admin/login");
+			return false;
 
-			exit;
+		}else{
+
+			if($inadmin === true && (bool)$_SESSION[User::SESSION]["inadmin"] === true){
+
+				return true;
+
+			}else if($inadmin === false){
+
+				return true;
+
+			}else{
+
+				return false;
+
+			}
+		}
+	}
+
+	public static function verifyLogin($inadmin = true)
+	{
+
+		if(!User::checkLogin($inadmin)){
+
+			if($inadmin){
+
+				header("Location: /admin/login");
+
+				exit;
+
+			}else{
+
+				header("Location: /login");
+
+				exit;
+
+			}
 
 		}
 

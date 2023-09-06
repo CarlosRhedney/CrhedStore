@@ -4,6 +4,7 @@ use Psr\Http\Message\ServerRequestInterface AS Request;
 use \Crhedstore\Page;
 use \Crhedstore\Model\Category;
 use \Crhedstore\Model\Product;
+use \Crhedstore\Model\Cart;
 
 $app->get('/', function(Request $request, Response $response, array $args){
 
@@ -61,6 +62,16 @@ $app->get('/products/{url}', function(Request $request, Response $response, arra
 		"photos"=>$product->getPhotos()
 	]);
 
+});
+
+$app->get('/cart', function(Request $request, Response $response, array $args){
+
+	$cart = Cart::getFromSession();
+
+	$page = new Page();
+
+	$page->setTpl("cart");
+	
 });
 
 ?>
