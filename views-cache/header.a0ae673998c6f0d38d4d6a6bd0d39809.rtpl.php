@@ -16,6 +16,8 @@
     
     <!-- Bootstrap -->
     <link rel="stylesheet" href="/assets/site/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="/assets/admin/dist/css/AdminLTE.min.css">
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="/assets/site/css/font-awesome.min.css">
