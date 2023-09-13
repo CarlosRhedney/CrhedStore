@@ -169,7 +169,7 @@ class User extends Model
 		$results = $sql->select("CALL sp_users_save(:person, :login, :despassword, :mail, :nrphone, :inadmin)", [
 			":person"=>$this->getperson(),
 			":login"=>$this->getlogin(),
-			":despassword"=>$this->getdespassword(),
+			":despassword"=>User::getPasswordHash($this->getdespassword()),
 			":mail"=>$this->getmail(),
 			":nrphone"=>$this->getnrphone(),
 			":inadmin"=>$this->getinadmin()
@@ -327,6 +327,15 @@ class User extends Model
 			":iduser"=>$this->getiduser()
 		]);
 		
+	}
+
+	public static function getPasswordHash($password)
+	{
+
+		return password_hash($password, PASSWORD_DEFAULT, [
+			"cost"=>12
+		]);
+
 	}
 
 }

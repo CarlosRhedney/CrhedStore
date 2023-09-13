@@ -5,6 +5,8 @@ use \Crhedstore\Page;
 use \Crhedstore\Model\Category;
 use \Crhedstore\Model\Product;
 use \Crhedstore\Model\Cart;
+use \Crhedstore\Model\User;
+use \Crhedstore\Model\Address;
 
 $app->get('/', function(Request $request, Response $response, array $args){
 
@@ -139,6 +141,61 @@ $app->post('/cart/freight', function(Request $request, Response $response, array
 	$cart->addFreight($_POST["zipcode"]);
 
 	header("Location: /cart");
+
+	exit;
+
+});
+
+$app->get('/checkout', function(Request $request, Response $response, array $args){
+
+	User::verifyLogin(false);
+
+	$cart = Cart::getFromSession();
+
+	$address = new Address();
+
+	$page = new Page();
+
+	$page->setTpl("checkout", [
+		"cart"=>$cart->getValues(),
+		"address"=>$address->getValues()
+	]);
+
+});
+
+$app->get('/login', function(Request $request, Response $response, array $args){
+
+	$page = new Page();
+
+	$page->setTpl("login", [
+		"errorLogin"=>User::getErrorLogin()
+	]);
+
+});
+
+$app->post('/login', function(Request $request, Response $response, array $args){
+
+	try{
+
+		User::login($_POST["login"], $_POST["password"]);
+
+	}catch(Exception $e){
+
+		User::setErrorLogin($e->getMessage());
+
+	}
+
+	header("Location: /checkout");
+
+	exit;
+
+});
+
+$app->get('/logout', function(Request $request, Response $response, array $args){
+
+	User::logout();
+
+	header("Location: /login");
 
 	exit;
 
