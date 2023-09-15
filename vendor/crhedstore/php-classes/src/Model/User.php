@@ -11,6 +11,7 @@ class User extends Model
 	const SECRET = "CarlosRhedneySan"; //Primeira chave precisa ter 16 caracteres
 	const SECRET_IV = "CarlosRhedneySantos"; //Segunda 19 caracteres
 	const ERROR_LOGIN = "UserErrorLogin";
+	const ERROR_REGISTER = "UserErrorRegister";
 
 	public static function login($login, $password)
 	{
@@ -335,6 +336,44 @@ class User extends Model
 		return password_hash($password, PASSWORD_DEFAULT, [
 			"cost"=>12
 		]);
+
+	}
+
+	public static function setErrorRegister($msg)
+	{
+
+		$_SESSION[User::ERROR_REGISTER] = $msg;
+
+	}
+
+	public static function getErrorRegister()
+	{
+
+		$msg = (isset($_SESSION[User::ERROR_REGISTER]) && $_SESSION[User::ERROR_REGISTER]) ? $_SESSION[User::ERROR_REGISTER] : "";
+
+		User::clearErrorRegister();
+
+		return $msg;
+
+	}
+
+	public static function clearErrorRegister()
+	{
+
+		$_SESSION[User::ERROR_REGISTER] = NULL;
+
+	}
+
+	public static function checkLoginExists($login)
+	{
+
+		$sql = new Sql();
+
+		$results = $sql->select("SELECT * FROM tb_users WHERE login = :login", [
+			":login"=>$login
+		]);
+
+		return (count($results) > 0);
 
 	}
 
