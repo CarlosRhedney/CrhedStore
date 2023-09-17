@@ -12,6 +12,7 @@ class User extends Model
 	const SECRET_IV = "CarlosRhedneySantos"; //Segunda 19 caracteres
 	const ERROR_LOGIN = "UserErrorLogin";
 	const ERROR_REGISTER = "UserErrorRegister";
+	const UPDATE_SUCCESS = "UserUpdateSuccess";
 
 	public static function login($login, $password)
 	{
@@ -375,6 +376,31 @@ class User extends Model
 
 		return (count($results) > 0);
 
+	}
+
+	public static function setSuccess($msg)
+	{
+
+		$_SESSION[User::UPDATE_SUCCESS] = $msg;
+
+	}
+
+	public static function getSuccess()
+	{
+
+		$msg = (isset($_SESSION[User::UPDATE_SUCCESS]) && $_SESSION[User::UPDATE_SUCCESS]) ? $_SESSION[User::UPDATE_SUCCESS] : "";
+
+		User::clearSuccess();
+
+		return $msg;
+
+	}
+
+	public static function clearSuccess()
+	{
+
+		$_SESSION[User::UPDATE_SUCCESS] = NULL;
+		
 	}
 
 }

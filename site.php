@@ -339,4 +339,86 @@ $app->post('/forgot/reset', function(Request $request, Response $response, array
 
 });
 
+$app->get('/profile', function(Request $request, Response $response, array $args){
+
+	User::verifyLogin(false);
+
+	$user = User::getFromSession();
+
+	$page = new Page();
+
+	$page->setTpl("profile", [
+		"user"=>$user->getValues(),
+		"profileMsg"=>User::getSuccess(),
+		"profileError"=>User::getErrorRegister()
+	]);
+
+});
+
+$app->post('/profile', function(Request $request, Response $response, array $args){
+
+	User::verifyLogin(false);
+
+	$user = User::getFromSession();
+
+	if(!isset($_POST["person"]) || $_POST["person"] === ""){
+
+		User::setErrorRegister("Preencha seu nome!");
+
+		header("Location: /profile");
+
+		exit;
+
+	}
+
+	if(!isset($_POST["mail"]) || $_POST["mail"] === ""){
+
+		User::setErrorRegister("Preencha seu email!");
+
+		header("Location: /profile");
+
+		exit;
+
+	}
+
+	if(!isset($_POST["nrphone"]) || $_POST["nrphone"] === ""){
+
+		User::setErrorRegister("Preencha seu telefone!");
+
+		header("Location: /profile");
+
+		exit;
+
+	}
+
+	if($_POST["mail"] !== $user->getmail()){
+
+		if(User::checkLoginExists($_POST["mail"]) === true){
+
+			User::setErrorRegister("E-mail já cadastrado!");
+
+			header("Location: /profile");
+
+			exit;
+
+		}
+
+	}
+
+	$_POST["inadmin"] = $user->getinadmin();
+	$_POST["password"] = $user->getdespassword();
+	$_POST["login"] = $_POST["mail"];
+
+	$user->setData($_POST);
+
+	$user->update();
+
+	User::setSuccess("Dados alterados com sucesso!");
+
+	header("Location: /profile");
+
+	exit;
+
+});
+
 ?>
