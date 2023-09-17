@@ -278,4 +278,65 @@ $app->post('/register', function(Request $request, Response $response, array $ar
 
 });
 
+$app->get('/forgot', function(Request $request, Response $response, array $args){
+
+	$page = new Page();
+
+	$page->setTpl("forgot");
+
+});
+
+$app->post('/forgot', function(Request $request, Response $response, array $args){
+
+	$user = User::getForgot($_POST["mail"], false);
+
+	header("Location: /forgot/sent");
+
+	exit;
+
+});
+
+$app->get('/forgot/sent', function(Request $request, Response $response, array $args){
+
+	$page = new Page();
+
+	$page->setTpl("forgot-sent");
+	
+});
+
+$app->get('/forgot/reset', function(Request $request, Response $response, array $args){
+
+	$user = User::validForgotDecrypt($_GET["code"]);
+
+	$page = new Page();
+
+	$page->setTpl("forgot-reset", [
+		"name"=>$user["person"],
+		"code"=>$_GET["code"]
+	]);
+
+});
+
+$app->post('/forgot/reset', function(Request $request, Response $response, array $args){
+
+	$forgot = User::validForgotDecrypt($_POST["code"]);
+
+	User::setForgotUsed($forgot["idrecovery"]);
+
+	$user = new User();
+
+	$user->get((int)$forgot["iduser"]);
+
+	$password = password_hash($_POST["password"], PASSWORD_DEFAULT, [
+		"cost"=>12
+	]);
+
+	$user->setPassword($password);
+
+	$page = new Page();
+
+	$page->setTpl("forgot-reset-success");
+
+});
+
 ?>
